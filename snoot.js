@@ -101,7 +101,39 @@ function validateAddress(fieldsetId) {
     var elementCount = inputElements.length;
     var currentElement;
     try {
-        alert("Yo homie, you did a bad");
+        // loop through the input fields looking for blanks
+        for (var i = 0; i < elementCount; i++) {
+            currentElement = inputElements[i];
+            // blanks
+            if (currentElement.value === "") {
+                currentElement.style.background = "rgb(255, 233, 233)";
+                fieldsetValidity = false;
+            }
+            // not blanks
+            else {
+                currentElement.style.background = "white";
+            }
+        }
+        // validate select list field
+        currentElement = document.querySelectorAll("#" + fieldsetId + " select")[0];
+        if (currentElement.selectedIndex === -1) {
+            currentElement.style.border = "1px solid red";
+            fieldsetValidity = false;
+        }else{
+            currentElement.style.border = "";
+        }
+        // action for invalid fieldset
+        if (fieldsetValidity === false) {
+            if (fieldsetId === "billingAddress") {
+                throw "Please complete all Billing Address information";
+            }else{
+                throw "Please complete all Delivery Address information";
+            }
+        }
+        else{
+            errorDiv.style.display = "none";
+            errorDiv.innerHTML = "";
+        }
     } catch(msg) {
         errorDiv.style.display = "block";
         errorDiv.innerHTML = msg;
@@ -118,6 +150,9 @@ function validateForm(evt) {
         evt.returnValue = false;
     }
     formValidity = false;
+    
+    validateAddress("billingAddress");
+    validateAddress("deliveryAddress");
     
     // form is valid
     if(formValidity === true) {

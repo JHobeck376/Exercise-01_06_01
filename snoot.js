@@ -180,27 +180,8 @@ function validateDeliveryDate() {
     }
 }
 
-// function to validate custom message 
-function validateMessage() {
-    var msgBox = document.getElementById("customText")
-    var errorDiv = document.querySelectorAll("#message .errorMessage")[0];
-    var fieldsetValidity = true;
-    try {
-        // validate checkbox and textarea custom message
-        if (document.getElementById("custom").checked && (msgBox.value === "" || msgBox.value === placeholder)) {
-            throw "Please enter your custom message text";
-        } else {
-            errorDiv.style.display = "none";
-            errorDiv.innerHTML = "";
-            msgBox.style.background = "white";
-        }
-    } catch (msg) {
-        errorDiv.style.display = "block";
-        errorDiv.innerHTML = msg;
-        msgBox.style.background = "rgb(255, 233, 233)"
-        formValidity = false;
-    }
-}
+
+
 // function to validate payment
 function validatePayment() {
     var errorDiv = document.querySelectorAll("#paymentInfo .errorMessage")[0];
@@ -265,6 +246,76 @@ function validatePayment() {
     }
 }
 
+// function to validate custom message 
+function validateMessage() {
+    var msgBox = document.getElementById("customText")
+    var errorDiv = document.querySelectorAll("#message .errorMessage")[0];
+    var fieldsetValidity = true;
+    try {
+        // validate checkbox and textarea custom message
+        if (document.getElementById("custom").checked && (msgBox.value === "" || msgBox.value === placeholder)) {
+            throw "Please enter your custom message text";
+        } else {
+            errorDiv.style.display = "none";
+            errorDiv.innerHTML = "";
+            msgBox.style.background = "white";
+        }
+    } catch (msg) {
+        errorDiv.style.display = "block";
+        errorDiv.innerHTML = msg;
+        msgBox.style.background = "rgb(255, 233, 233)"
+        formValidity = false;
+    }
+}
+
+// function to validate create account
+function validateCreateAccount() {
+    var errorDiv = document.querySelectorAll("#createAccount .errorMessage")[0];
+    var usernameElement = document.getElementById("username");
+    var pass1Element = document.getElementById("pass1");
+    var pass2Element = document.getElementById("pass2");
+    var invColor = "rgb(255, 233, 233)";
+    var passwordMismatch = false;
+    var fieldsetValidity = true;
+    usernameElement.style.background = "white";
+    pass1Element.style.background = "white";
+    pass2Element.style.background = "white";
+    errorDiv.style.display = "none";
+    errorDiv.innerHTML = "";
+    try {
+        // one or more fields have data
+        if(usernameElement.value !== "" && pass1Element.value !== "" && pass2Element.value !== "") {
+            // verify passwords match
+            if(pass1Element.value !== pass2Element.value) {
+                fieldsetValidity = false;
+                passwordMismatch = true;
+                throw "The passwords entered do not match. Please re-enter.";
+            }
+        }else if(usernameElement.value === "" && pass1Element.value === "" && pass2Element.value === "") {
+            // no fields have data
+            fieldsetValidity = true;
+            passwordMismatch = false;
+        }else {
+            fieldsetValidity = "false";
+            throw "Please enter all fields to create an account";
+        }
+    } catch (msg) {
+        errorDiv.style.display = "block";
+        pass1Element.style.background = invColor;
+        pass2Element.style.background = invColor;
+        errorDiv.innerHTML = msg;
+        formValidity = false;
+        if(passwordMismatch) {
+            usernameElement.style.background = "white";
+        }else if (usernameElement.value !== "" && (pass1Element.value === "" || pass2Element.value === "")){
+            usernameElement.style.background = "white";
+            pass1Element.style.background = invColor;
+            pass2Element.style.background = invColor;
+        }else {
+            usernameElement.style.background = invColor;
+        }
+    }
+}
 
 // function to validate entire form
 function validateForm(evt) {
@@ -281,6 +332,7 @@ function validateForm(evt) {
     validateDeliveryDate();
     validatePayment();
     validateMessage();
+    validateCreateAccount();
 
     // form is valid
     if (formValidity === true) {
